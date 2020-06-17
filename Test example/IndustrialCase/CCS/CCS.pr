@@ -1,0 +1,70 @@
+system CCS;
+    /* CIF TEXT (77, 289), (355, 102) */
+    -- Text area for declarations and comments
+    use dv comment 'dataview-uniq.asn';
+    signal CCSR(Control_Computer_SelfCheck_Result);
+    signal DPR(DEVICE_PowerOn_Result);
+    signal DCSC_OK;
+    /* CIF ENDTEXT */
+    channel c
+        from env to CCS with CCSR;
+        from CCS to env with DPR,
+DCSC_OK;
+    endchannel;
+    block CCS;
+        signalroute r
+            from env to CCS with CCSR;
+            from CCS to env with DPR,
+DCSC_OK;
+        connect c and r;
+        /* CIF PROCESS (201, 60), (150, 75) */
+        process CCS;
+            /* CIF TEXT (424, 47), (317, 101) */
+            -- Text area for declarations and comments
+            
+            dcl ccsr Control_Computer_SelfCheck_Result;
+            dcl dcsi DEVICE_Current_StateInfo;
+            dcl dp1r DEVICE_PowerOn1_Result;
+            /* CIF ENDTEXT */
+            /* CIF procedure (397, 230), (87, 35) */
+            procedure power_off;
+                /* CIF TEXT (66, 73), (290, 140) */
+                -- Text area for declarations and comments
+                
+                fpar in dcsi DEVICE_Current_StateInfo; 
+                returns DEVICE_PowerOn1_Result;
+                
+                dcl dpr DEVICE_PowerOn1_Result;
+                /* CIF ENDTEXT */
+                /* CIF START (408, 46), (70, 35) */
+                START;
+                    /* CIF return (425, 101), (35, 35) */
+                    return dpr;
+            endprocedure;
+            /* CIF START (144, 39), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (76, 94), (206, 35) */
+                NEXTSTATE control_computer_selfcheck;
+            /* CIF state (76, 94), (206, 35) */
+            state control_computer_selfcheck;
+                /* CIF input (131, 149), (94, 35) */
+                input CCSR(ccsr);
+                    /* CIF decision (89, 204), (178, 50) */
+                    decision ccsr!content=errorCCSR;
+                        /* CIF ANSWER (99, 274), (70, 25) */
+                        (TRUE):
+                            /* CIF task (53, 319), (161, 35) */
+                            task dp1r:=power_off(dcsi);
+                            /* CIF output (70, 374), (128, 35) */
+                            output DPR(errorCCSR);
+                        /* CIF ANSWER (221, 274), (70, 25) */
+                        (FALSE):
+                            /* CIF output (212, 319), (87, 35) */
+                            output DCSC_OK;
+                    enddecision;
+                    /* CIF NEXTSTATE (143, 424), (70, 35) */
+                    NEXTSTATE -;
+            endstate;
+        endprocess CCS;
+    endblock;
+endsystem;

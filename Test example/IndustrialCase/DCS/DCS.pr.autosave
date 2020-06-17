@@ -1,0 +1,66 @@
+SYSTEM DCS;
+    /* CIF TEXT (441, 78), (272, 140) */
+    -- Text area for declarations and comments
+use dv comment 'dataview-uniq.asn';
+signal DSR(DEVICE_SelfCheck_Result);
+signal DPR(DEVICE_PowerOn_Result);
+signal DSSC_OK;
+    /* CIF ENDTEXT */
+    CHANNEL c
+        FROM ENV TO DCS WITH DSR;
+        FROM DCS TO ENV WITH DSSC_OK,
+DPR;
+    ENDCHANNEL;
+    BLOCK DCS;
+        SIGNALROUTE r
+            FROM ENV TO DCS WITH DSR;
+            FROM DCS TO ENV WITH DSSC_OK,
+DPR;
+        CONNECT c AND r;
+        /* CIF PROCESS (224, 180), (150, 75) */
+        PROCESS DCS;
+            /* CIF TEXT (0, 77), (272, 140) */
+            -- Text area for declarations and comments
+
+dcl dsr DEVICE_SelfCheck_Result;
+            /* CIF ENDTEXT */
+            /* CIF PROCEDURE (71, 292), (85, 35) */
+            PROCEDURE power_off;
+                /* CIF TEXT (74, 17), (272, 140) */
+                -- Text area for declarations and comments
+
+fpar in dcsi DEVICE_Current_StateInfo; 
+returns DEVICE_PowerOn1_Result;
+
+dcl dpr DEVICE_PowerOn1_Result;
+                /* CIF ENDTEXT */
+                /* CIF START (361, 37), (70, 35) */
+                START;
+                    /* CIF RETURN (379, 92), (35, 35) */
+                    RETURN dpr;
+            ENDPROCEDURE;
+            /* CIF START (375, 15), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (312, 70), (196, 35) */
+                NEXTSTATE device_computer_selfcheck;
+            /* CIF STATE (312, 70), (196, 35) */
+            STATE device_computer_selfcheck;
+                /* CIF INPUT (373, 125), (74, 35) */
+                INPUT DSR(dsr);
+                    /* CIF DECISION (331, 180), (157, 50) */
+                    DECISION dsr!content=errorDSR;
+                            /* CIF ANSWER (330, 250), (70, 25) */
+                            (TRUE):
+                                /* CIF TASK (287, 295), (155, 35) */
+                                TASK dp1r:=power_off(dcsi);
+                                /* CIF OUTPUT (309, 350), (111, 35) */
+                                OUTPUT DPR(errorDSR);
+                            /* CIF ANSWER (452, 251), (70, 25) */
+                            (FALSE):
+                                /* CIF OUTPUT (447, 295), (79, 35) */
+                                OUTPUT DSSC_OK;
+                    ENDDECISION;
+            ENDSTATE;
+        ENDPROCESS DCS;
+    ENDBLOCK;
+ENDSYSTEM;

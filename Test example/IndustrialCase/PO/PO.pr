@@ -1,0 +1,112 @@
+system PO;
+    /* CIF TEXT (126, 21), (290, 140) */
+    -- Text area for declarations and comments
+    use dv comment 'dataview-uniq.asn';
+    signal DCSC_OK; 
+    signal DSSC_OK;
+    signal DPR(DEVICE_PowerOn_Result);
+    signal TRIGGER1(Trigger_1);
+    /* CIF ENDTEXT */
+    channel c
+        from env to PO with DCSC_OK,
+DSSC_OK;
+        from PO to env with DPR,
+TRIGGER1;
+    endchannel;
+    block PO;
+        signalroute r
+            from env to PO with DCSC_OK,
+DSSC_OK;
+            from PO to env with DPR,
+TRIGGER1;
+        connect c and r;
+        /* CIF PROCESS (301, 205), (150, 75) */
+        process PO;
+            /* CIF TEXT (545, 42), (290, 140) */
+            -- Text area for declarations and comments
+            
+            dcl dp1r DEVICE_PowerOn1_Result;
+            dcl dcsi DEVICE_Current_StateInfo;
+            dcl trigger1 Trigger_1;
+            /* CIF ENDTEXT */
+            /* CIF procedure (411, 380), (84, 35) */
+            procedure power_on;
+                /* CIF TEXT (67, 76), (290, 140) */
+                -- Text area for declarations and comments
+                
+                fpar in dcsi DEVICE_Current_StateInfo; 
+                returns DEVICE_PowerOn1_Result;
+                
+                dcl dpr DEVICE_PowerOn1_Result;
+                /* CIF ENDTEXT */
+                /* CIF START (411, 40), (70, 35) */
+                START;
+                    /* CIF return (428, 95), (35, 35) */
+                    return dpr;
+            endprocedure;
+            /* CIF procedure (479, 445), (87, 35) */
+            procedure power_off;
+                /* CIF TEXT (67, 76), (290, 140) */
+                -- Text area for declarations and comments
+                
+                fpar in dcsi DEVICE_Current_StateInfo; 
+                returns DEVICE_PowerOn1_Result;
+                
+                dcl dpr DEVICE_PowerOn1_Result;
+                /* CIF ENDTEXT */
+                /* CIF START (411, 40), (70, 35) */
+                START;
+                    /* CIF return (428, 95), (35, 35) */
+                    return dpr;
+            endprocedure;
+            /* CIF START (240, 0), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (233, 55), (84, 35) */
+                NEXTSTATE power_on;
+            /* CIF state (315, 165), (223, 35) */
+            state device_computer_selfcheck_ok;
+                /* CIF input (383, 220), (87, 35) */
+                input DCSC_OK;
+                    /* CIF join (409, 275), (35, 35) */
+                    join dcs_OK;
+            endstate;
+            /* CIF state (46, 165), (228, 35) */
+            state control_computer_selfcheck_ok;
+                /* CIF input (118, 220), (84, 35) */
+                input DSSC_OK;
+                    /* CIF label (122, 275), (77, 35) */
+                    dcs_OK:
+                    /* CIF task (81, 325), (158, 35) */
+                    task dp1r:=power_on(dcsi);
+                    /* CIF decision (101, 380), (118, 50) */
+                    decision dp1r=errorDP1;
+                        /* CIF ANSWER (38, 450), (70, 25) */
+                        (FALSE):
+                            /* CIF output (0, 495), (146, 35) */
+                            output TRIGGER1(trigger1);
+                            /* CIF output (28, 550), (90, 35) */
+                            output DPR(dp1r);
+                        /* CIF ANSWER (195, 450), (70, 25) */
+                        (TRUE):
+                            /* CIF task (149, 495), (161, 35) */
+                            task dp1r:=power_off(dcsi);
+                            /* CIF output (170, 550), (119, 35) */
+                            output DPR(errorDP1);
+                    enddecision;
+                    /* CIF NEXTSTATE (125, 600), (70, 35) */
+                    NEXTSTATE -;
+            endstate;
+            /* CIF state (233, 55), (84, 35) */
+            state power_on;
+                /* CIF input (117, 110), (87, 35) */
+                input DCSC_OK;
+                    /* CIF NEXTSTATE (46, 165), (228, 35) */
+                    NEXTSTATE control_computer_selfcheck_ok;
+                /* CIF input (384, 110), (84, 35) */
+                input DSSC_OK;
+                    /* CIF NEXTSTATE (315, 165), (223, 35) */
+                    NEXTSTATE device_computer_selfcheck_ok;
+            endstate;
+        endprocess PO;
+    endblock;
+endsystem;
