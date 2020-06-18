@@ -1,0 +1,60 @@
+system og;
+    /* CIF TEXT (159, 221), (287, 188) */
+    -- Text area for declarations and comments
+    
+    use dv comment 'dataview-uniq.asn';
+    
+    --use dv2 comment 'dataview2.asn';
+    
+    signal go;
+    signal send_to_uart(OctStr);
+    /* CIF ENDTEXT */
+    channel c
+        from env to og with go;
+        from og to env with send_to_uart;
+    endchannel;
+    block og;
+        signalroute r
+            from env to og with go;
+            from og to env with send_to_uart;
+        connect c and r;
+        /* CIF PROCESS (225, 49), (150, 75) */
+        process og;
+            /* CIF TEXT (711, 132), (371, 280) */
+            -- Text area for declarations and comments
+            
+            dcl msg OctStr := 'hi';
+            /* CIF ENDTEXT */
+            /* CIF START (363, 159), (70, 35) */
+            START;
+                /* CIF PROCEDURECALL (338, 214), (120, 35) */
+                call writeln('Hello');
+                /* CIF NEXTSTATE (363, 264), (70, 35) */
+                NEXTSTATE wait;
+            /* CIF state (492, 510), (74, 35) */
+            state Running;
+            endstate;
+            /* CIF state (363, 264), (70, 35) */
+            state wait;
+                /* CIF input (473, 319), (70, 35) */
+                input Go;
+                    /* CIF NEXTSTATE (473, 374), (70, 35) */
+                    NEXTSTATE wait;
+                /* CIF provided (240, 319), (70, 35) */
+                provided true;
+                    /* CIF output (199, 374), (152, 35) */
+                    output send_to_uart ('hello');
+                    /* CIF output (170, 429), (209, 35) */
+                    output send_to_uart ('hello' // 'world');
+                    /* CIF output (152, 484), (246, 38) */
+                    output send_to_uart ('How' // 'are' // 'you?');
+                    /* CIF output (165, 542), (219, 35) */
+                    output send_to_uart('I said' // msg // '!');
+                    /* CIF task (85, 597), (379, 35) */
+                    task msg := if msg = 'hi' then 'ping' else 'Received: ' // msg // ' ' fi;;
+                    /* CIF NEXTSTATE (239, 647), (71, 35) */
+                    NEXTSTATE running;
+            endstate;
+        endprocess og;
+    endblock;
+endsystem;
