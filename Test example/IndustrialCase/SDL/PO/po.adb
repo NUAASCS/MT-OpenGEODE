@@ -27,22 +27,22 @@ package body PO is
    ctxt: aliased ctxt_Ty;
    CS_Only  : constant Integer := 5;
    procedure runTransition(Id: Integer);
-   function p‹power_on(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result;
    function p‹power_off(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result;
-   function p‹power_on(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result is
-      dpr : aliased asn1SccDevice_PowerOn1_Result;
-      begin
-         --  RETURN dpr (None,None) at 428, 95
-         return dpr;
-      end p‹power_on;
-      
-
+   function p‹power_on(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result;
    function p‹power_off(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result is
       dpr : aliased asn1SccDevice_PowerOn1_Result;
       begin
          --  RETURN dpr (None,None) at 428, 95
          return dpr;
       end p‹power_off;
+      
+
+   function p‹power_on(dcsi: in asn1SccDevice_Current_StateInfo) return asn1SccDevice_PowerOn1_Result is
+      dpr : aliased asn1SccDevice_PowerOn1_Result;
+      begin
+         --  RETURN dpr (None,None) at 428, 95
+         return dpr;
+      end p‹power_on;
       
 
    procedure DCSC_OK is
@@ -77,29 +77,29 @@ package body PO is
 
    procedure runTransition(Id: Integer) is
       trId : Integer := Id;
-      tmp205 : aliased asn1SccDevice_PowerOn_Result;
       --  !! stack: _call_external_function line 1271
+      tmp37 : aliased asn1SccDevice_PowerOn_Result;
       begin
          while (trId /= -1) loop
             case trId is
                when 0 =>
-                  --  NEXT_STATE power_on (65,26) at 229, 55
+                  --  NEXT_STATE power_on (65,26) at 233, 55
                   trId := -1;
                   ctxt.state := power_on;
                   goto next_transition;
                when 1 =>
-                  --  JOIN dcs_OK (71,25) at 405, 275
+                  --  JOIN dcs_OK (71,25) at 409, 275
                   goto dcs_OK;
                when 2 =>
                   --  JOIN dcs_OK (None,None) at None, None
                   goto dcs_OK;
                when 3 =>
-                  --  NEXT_STATE control_computer_selfcheck_ok (104,30) at 42, 165
+                  --  NEXT_STATE control_computer_selfcheck_ok (104,30) at 46, 165
                   trId := -1;
                   ctxt.state := control_computer_selfcheck_ok;
                   goto next_transition;
                when 4 =>
-                  --  NEXT_STATE device_computer_selfcheck_ok (108,30) at 311, 165
+                  --  NEXT_STATE device_computer_selfcheck_ok (108,30) at 314, 165
                   trId := -1;
                   ctxt.state := device_computer_selfcheck_ok;
                   goto next_transition;
@@ -126,10 +126,10 @@ package body PO is
                --  dp1r:=power_off(dcsi) (92,33)
                ctxt.dp1r := p‹power_off(ctxt.dcsi);
                --  DPR(errorDP1) (94,35)
-               tmp205 := errorDP1;
-               RI‹DPR(tmp205'Access);
+               tmp37 := errorDP1;
+               RI‹DPR(tmp37'Access);
             end if;
-            --  NEXT_STATE - (97,30) at 121, 600
+            --  NEXT_STATE - (97,30) at 125, 600
             trId := -1;
             goto next_transition;
             <<next_transition>>

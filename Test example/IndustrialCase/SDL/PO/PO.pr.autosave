@@ -29,8 +29,8 @@ TRIGGER1;
             dcl dcsi DEVICE_Current_StateInfo;
             dcl trigger1 Trigger_1;
             /* CIF ENDTEXT */
-            /* CIF procedure (411, 380), (84, 35) */
-            procedure power_on;
+            /* CIF procedure (479, 445), (87, 35) */
+            procedure power_off;
                 /* CIF TEXT (67, 76), (290, 140) */
                 -- Text area for declarations and comments
                 
@@ -44,8 +44,8 @@ TRIGGER1;
                     /* CIF return (428, 95), (35, 35) */
                     return dpr;
             endprocedure;
-            /* CIF procedure (479, 445), (87, 35) */
-            procedure power_off;
+            /* CIF procedure (411, 380), (84, 35) */
+            procedure power_on;
                 /* CIF TEXT (67, 76), (290, 140) */
                 -- Text area for declarations and comments
                 
@@ -63,7 +63,7 @@ TRIGGER1;
             START;
                 /* CIF NEXTSTATE (233, 55), (84, 35) */
                 NEXTSTATE power_on;
-            /* CIF state (315, 165), (223, 35) */
+            /* CIF state (314, 165), (223, 35) */
             state device_computer_selfcheck_ok;
                 /* CIF input (383, 220), (87, 35) */
                 input DCSC_OK;
@@ -74,26 +74,28 @@ TRIGGER1;
             state control_computer_selfcheck_ok;
                 /* CIF input (118, 220), (84, 35) */
                 input DSSC_OK;
-                    /* CIF label (122, 275), (77, 35) */
+                    /* CIF label (121, 275), (77, 35) */
                     dcs_OK:
                     /* CIF task (81, 325), (158, 35) */
                     task dp1r:=power_on(dcsi);
-                    /* CIF decision (101, 380), (118, 50) */
+                    /* CIF PROCEDURECALL (84, 380), (152, 35) */
+                    call dp1r:=power_on(dcsi);
+                    /* CIF decision (101, 430), (118, 50) */
                     decision dp1r=errorDP1;
-                        /* CIF ANSWER (38, 450), (70, 25) */
+                        /* CIF ANSWER (38, 500), (70, 25) */
                         (FALSE):
-                            /* CIF output (0, 495), (146, 35) */
+                            /* CIF output (0, 545), (146, 35) */
                             output TRIGGER1(trigger1);
-                            /* CIF output (28, 550), (90, 35) */
+                            /* CIF output (28, 600), (90, 35) */
                             output DPR(dp1r);
-                        /* CIF ANSWER (195, 450), (70, 25) */
+                        /* CIF ANSWER (195, 500), (70, 25) */
                         (TRUE):
-                            /* CIF task (149, 495), (161, 35) */
+                            /* CIF task (149, 545), (161, 35) */
                             task dp1r:=power_off(dcsi);
-                            /* CIF output (170, 550), (119, 35) */
+                            /* CIF output (170, 600), (119, 35) */
                             output DPR(errorDP1);
                     enddecision;
-                    /* CIF NEXTSTATE (125, 600), (70, 35) */
+                    /* CIF NEXTSTATE (125, 650), (70, 35) */
                     NEXTSTATE -;
             endstate;
             /* CIF state (233, 55), (84, 35) */
@@ -104,7 +106,7 @@ TRIGGER1;
                     NEXTSTATE control_computer_selfcheck_ok;
                 /* CIF input (384, 110), (84, 35) */
                 input DSSC_OK;
-                    /* CIF NEXTSTATE (315, 165), (223, 35) */
+                    /* CIF NEXTSTATE (314, 165), (223, 35) */
                     NEXTSTATE device_computer_selfcheck_ok;
             endstate;
         endprocess PO;

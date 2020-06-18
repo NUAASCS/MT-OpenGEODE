@@ -51,17 +51,19 @@ DCSC_OK;
                 input CCSR(ccsr);
                     /* CIF decision (89, 204), (178, 50) */
                     decision ccsr!content=errorCCSR;
-                        /* CIF ANSWER (99, 274), (70, 25) */
+                        /* CIF ANSWER (87, 274), (70, 25) */
                         (TRUE):
-                            /* CIF task (53, 319), (161, 35) */
+                            /* CIF task (41, 319), (161, 35) */
                             task dp1r:=power_off(dcsi);
-                            /* CIF output (70, 374), (128, 35) */
+                            /* CIF output (58, 374), (128, 35) */
                             output DPR(errorCCSR);
                         /* CIF ANSWER (221, 274), (70, 25) */
                         (FALSE):
-                            /* CIF output (212, 319), (87, 35) */
+                            /* CIF output (212, 318), (87, 35) */
                             output DCSC_OK;
                     enddecision;
+                    /* CIF NEXTSTATE (143, 424), (70, 35) */
+                    NEXTSTATE -;
             endstate;
         endprocess CCS;
     endblock;

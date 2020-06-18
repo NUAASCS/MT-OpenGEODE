@@ -1,0 +1,76 @@
+system DP;
+    /* CIF TEXT (295, 241), (294, 281) */
+    -- Text area for declarations and comments
+    use dv comment 'dataview-uniq.asn';
+    signal DPC(DEVICE_PowerOn_Command);
+    signal DCC; 
+    signal DSM;
+    /* CIF ENDTEXT */
+    channel c
+        from env to DP with DPC;
+        from DP to env with DCC,
+DSM;
+    endchannel;
+    block DP;
+        signalroute r
+            from env to DP with DPC;
+            from DP to env with DCC,
+DSM;
+        connect c and r;
+        /* CIF PROCESS (297, 111), (147, 75) */
+        process DP;
+            /* CIF TEXT (0, 50), (290, 140) */
+            -- Text area for declarations and comments
+            
+            dcl trigger Trigger;
+            dcl dpc DEVICE_PowerOn_Command;
+            /* CIF ENDTEXT */
+            /* CIF procedure (104, 222), (97, 35) */
+            procedure data_parser;
+                /* CIF TEXT (39, 41), (290, 111) */
+                -- Text area for declarations and comments
+                
+                fpar in dpc DEVICE_PowerOn_Command;
+                returns Trigger;
+                
+                DCL t Trigger;
+                /* CIF ENDTEXT */
+                /* CIF START (389, 47), (70, 35) */
+                START;
+                    /* CIF return (406, 102), (35, 35) */
+                    return t;
+            endprocedure;
+            /* CIF procedure (91, 300), (103, 35) */
+            procedure trigger_start;
+                /* CIF TEXT (40, 50), (290, 80) */
+                -- Text area for declarations and comments
+                
+                fpar in trigger Trigger;
+                /* CIF ENDTEXT */
+                /* CIF START (400, 51), (70, 35) */
+                START;
+                    /* CIF return (417, 106), (35, 35) */
+                    return ;
+            endprocedure;
+            /* CIF START (357, 39), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (346, 94), (92, 35) */
+                NEXTSTATE data_parse;
+            /* CIF state (346, 94), (92, 35) */
+            state data_parse;
+                /* CIF input (349, 149), (85, 35) */
+                input DPC(dpc);
+                    /* CIF task (299, 204), (184, 35) */
+                    task trigger:=data_parser(dpc);
+                    /* CIF PROCEDURECALL (313, 259), (156, 35) */
+                    call trigger_start(trigger);
+                    /* CIF output (356, 314), (70, 35) */
+                    output DCC;
+                    /* CIF output (347, 364), (88, 35) */
+                    output DSM;
+                    /* CIF NEXTSTATE (356, 419), (70, 35) */
+                    NEXTSTATE -;
+            endstate;
+        endprocess DP;
+    endblock;
+endsystem;
