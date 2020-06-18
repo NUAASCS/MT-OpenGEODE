@@ -1,0 +1,27 @@
+TASTE-Dataview DEFINITIONS ::=
+BEGIN
+
+T-Bool ::= BOOLEAN
+My-OctStr    ::= OCTET STRING (SIZE (0..20))
+
+SeqOf ::= SEQUENCE (SIZE(0..100)) OF My-OctStr
+
+Toto ::= SEQUENCE { elem-1 My-OctStr, elem-2 SeqOf OPTIONAL}
+
+AChoice ::= CHOICE {
+ a T-Bool,
+ b SeqOf
+}
+
+SeqBool ::= SEQUENCE(SIZE(1..5)) OF BOOLEAN
+
+MyReal ::= REAL (1.0 .. 5.0)
+MyOtherReal ::= REAL (1.0 .. 6.0)
+
+Nested ::= SEQUENCE {
+    a SEQUENCE {
+        b BOOLEAN
+    }
+}
+NestedArray ::= SEQUENCE (SIZE(1..2)) OF SEQUENCE { a BOOLEAN }
+END
