@@ -1,0 +1,13 @@
+TASTE-Dataview DEFINITIONS ::=
+BEGIN
+
+MyBool ::= BOOLEAN
+
+MyInt ::= INTEGER (0..255)
+
+MySeq ::= SEQUENCE {
+   a MyBool,
+   b MyInt
+}
+
+END
